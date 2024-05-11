@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Sotka / chat</title>
+    <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+    <header>
+        <h1>Sotka: Golang webchat sample</h1>
+    </header>
+    <aside>
+        <form>
+            <select id="chatroom-selection">
+                <option value="general" selected>Общая группа</option>
+                <option value="first">Первая группа</option>
+                <option value="second">Вторая группа</option>
+                <option value="third">Третья группа</option>
+            </select>
+        </form>
+    </aside>
+    <main>
+        <section>
+            <textarea class="messagearea" id="chatmessages" readonly name="chatmessages" rows="20" ></textarea>
+        </section>
+        
+        <form id="chatroom-message">
+            <input type="text" id="message" name="message" placeholder="Сообщение...">
+            <input type="submit" id="send" value="Отправить">
+        </form>
+    </main>
+</body>
+<script src="./event.js"></script>
+<script type="text/javascript">
+    window.onload = function () {
+        document.getElementById("chatroom-selection").onchange = changeChatRoom;
+        document.getElementById("chatroom-message").onsubmit = sendMessage;
+
+        if (window["WebSocket"]) {
+            conn = new WebSocket("ws://localhost:8080/ws");
+            
+            conn.onmessage = function (evt) {
+                    const eventData = JSON.parse(evt.data);
+                    const event = Object.assign(new Event, eventData);
+                    
+                    routeEvent(event);
+                }
+        } else {
+            alert("Not supporting websockets");
+        }
+    };
+</script>
+
+</html>

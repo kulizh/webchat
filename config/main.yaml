@@ -1,0 +1,4 @@
+listenport: "8000"
+routes:
+  ws: /ws
+  counter: /clients-count
